@@ -151,15 +151,15 @@ void prepareCiphers(){
     gcm256.setKey(key, gcm256.keySize());
     gcm256.setIV(iv, gcm256.ivSize());
 
-    xts128.setSectorSize(64);
+    xts128.setSectorSize(16);
     xts128.setKey(key, xts128.keySize());
     xts128.setTweak(iv, xts128.tweakSize());
 
-    xts192.setSectorSize(64);
+    xts192.setSectorSize(16);
     xts192.setKey(key, xts192.keySize());
     xts192.setTweak(iv, xts192.tweakSize());
 
-    xts256.setSectorSize(64);
+    xts256.setSectorSize(16);
     xts256.setKey(key, xts256.keySize());
     xts256.setTweak(iv, xts256.tweakSize());
 }
