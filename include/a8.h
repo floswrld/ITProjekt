@@ -9,7 +9,7 @@
 #include <XTS.h>
 #include "tool.h"
 
-void testPerformance8(size_t counter);
+String* testPerformance8(size_t counter, size_t plaintextSize);
 void prepareCiphers();
 
 

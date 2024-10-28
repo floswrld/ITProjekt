@@ -8,7 +8,11 @@ void compareAESPerformance7(AES128 *aes128, AES192 *aes192, AES256 *aes256, size
     byte encryptBuffer[16];
     byte decryptBuffer[16];
 
-    for(size_t i = 0; i < counter; i++){
+    unsigned long aes128Time= 0;
+    unsigned long aes192Time= 0;
+    unsigned long aes256Time= 0;
+
+    for(size_t i = 0; i < counter; ++i){
 
         fillRandomBytes(plaintext, sizeof(plaintext));
         fillRandomBytes(key,  sizeof(key));
@@ -18,31 +22,26 @@ void compareAESPerformance7(AES128 *aes128, AES192 *aes192, AES256 *aes256, size
 
         start = micros();
         aes128->encryptBlock(encryptBuffer, plaintext);
-        Serial.println(micros() - start);
-
-        start = micros();
         aes128->decryptBlock(decryptBuffer, encryptBuffer);
-        Serial.println(micros() - start);
+        aes128Time += micros() - start;
 
         start = micros();
         aes192->encryptBlock(encryptBuffer, plaintext);
-        Serial.println(micros() - start);
-
-        start = micros();
         aes192->decryptBlock(decryptBuffer, encryptBuffer);
-        Serial.println(micros() - start);
+        aes192Time += micros() - start;
 
         start = micros();
         aes256->encryptBlock(encryptBuffer, plaintext);
-        Serial.println(micros() - start);
-
-        start = micros();
         aes256->decryptBlock(decryptBuffer, encryptBuffer);
-        Serial.println(micros() - start);
+        aes256Time += micros() - start;
 
         yield();
 
     }
+
+    Serial.println("AES128," + String(aes128Time/counter));
+    Serial.println("AES192," + String(aes192Time/counter));
+    Serial.println("AES256," + String(aes256Time/counter));
 
     
 

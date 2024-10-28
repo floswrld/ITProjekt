@@ -16,104 +16,110 @@ XTS<AES128> xts128;
 XTS<AES192> xts192;
 XTS<AES256> xts256;
 
-byte plaintext[16];
+
+
+
+
 byte key[32];
 byte encryptBuffer[16];
 byte decryptBuffer[16];
 byte iv[16];
 byte tweak[16] = {0x00};
+String strings[12];
+byte plaintext[1024];
 
-void testPerformance8(size_t counter){
+String* testPerformance8(size_t counter, size_t plaintextSize){
+
+    unsigned long ctr128Time= 0;
+    unsigned long ctr192Time= 0;
+    unsigned long ctr256Time= 0;
+    unsigned long eax128Time= 0;
+    unsigned long eax192Time= 0;
+    unsigned long eax256Time= 0;
+    unsigned long gcm128Time= 0;
+    unsigned long gcm192Time= 0;
+    unsigned long gcm256Time= 0;
+    unsigned long xts128Time= 0;
+    unsigned long xts192Time= 0;
+    unsigned long xts256Time= 0;
 
     unsigned long start;
 
-    for (size_t i = 0; i < counter; i++){
+    for (size_t i = 0; i < counter; ++i){
 
-        fillRandomBytes(plaintext,  sizeof(plaintext));
+        fillRandomBytes(plaintext,  plaintextSize);
         prepareCiphers();
 
         start = micros();
         ctr128.encrypt(encryptBuffer, plaintext, sizeof(plaintext));
-        Serial.println(micros() - start);
-        start = micros();
         ctr128.decrypt(plaintext, decryptBuffer, sizeof(plaintext));
-        Serial.println(micros() - start);
+        ctr128Time += micros() - start;
         start = micros();
         ctr192.encrypt(encryptBuffer, plaintext, sizeof(plaintext));
-        Serial.println(micros() - start);
-        start = micros();
         ctr192.decrypt(plaintext, decryptBuffer, sizeof(plaintext));
-        Serial.println(micros() - start);
+        ctr192Time += micros() - start;
         start = micros();
         ctr256.encrypt(encryptBuffer, plaintext, sizeof(plaintext));
-        Serial.println(micros() - start);
-        start = micros();
         ctr256.decrypt(plaintext, decryptBuffer, sizeof(plaintext));
-        Serial.println(micros() - start);
+        ctr256Time += micros() - start;
 
         start = micros();
         eax128.encrypt(encryptBuffer, plaintext, sizeof(plaintext));
-        Serial.println(micros() - start);
-        start = micros();
         eax128.decrypt(plaintext, decryptBuffer, sizeof(plaintext));
-        Serial.println(micros() - start);
+        eax128Time += micros() - start;
         start = micros();
         eax192.encrypt(encryptBuffer, plaintext, sizeof(plaintext));
-        Serial.println(micros() - start);
-        start = micros();
         eax192.decrypt(plaintext, decryptBuffer, sizeof(plaintext));
-        Serial.println(micros() - start);
+        eax192Time += micros() - start;
         start = micros();
         eax256.encrypt(encryptBuffer, plaintext, sizeof(plaintext));
-        Serial.println(micros() - start);
-        start = micros();
         eax256.decrypt(plaintext, decryptBuffer, sizeof(plaintext));
-        Serial.println(micros() - start);
+        eax256Time += micros() - start;
 
         start = micros();
         gcm128.encrypt(encryptBuffer, plaintext, sizeof(plaintext));
-        Serial.println(micros() - start);
-        start = micros();
         gcm128.decrypt(plaintext, decryptBuffer, sizeof(plaintext));
-        Serial.println(micros() - start);
+        gcm128Time += micros() - start;
         start = micros();
         gcm192.encrypt(encryptBuffer, plaintext, sizeof(plaintext));
-        Serial.println(micros() - start);
-        start = micros();
         gcm192.decrypt(plaintext, decryptBuffer, sizeof(plaintext));
-        Serial.println(micros() - start);
+        gcm192Time += micros() - start;
         start = micros();
         gcm256.encrypt(encryptBuffer, plaintext, sizeof(plaintext));
-        Serial.println(micros() - start);
-        start = micros();
         gcm256.decrypt(plaintext, decryptBuffer, sizeof(plaintext));
-        Serial.println(micros() - start);
+        gcm256Time += micros() - start;
 
         start = micros();
         xts128.encryptSector(encryptBuffer, plaintext);
-        Serial.println(micros() - start);
-        start = micros();
         xts128.decryptSector(plaintext, decryptBuffer);
-        Serial.println(micros() - start);
+        xts128Time += micros() - start;
         start = micros();
         xts192.encryptSector(encryptBuffer, plaintext);
-        Serial.println(micros() - start);
-        start = micros();
         xts192.decryptSector(plaintext, decryptBuffer);
-        Serial.println(micros() - start);
+        xts192Time += micros() - start;
         start = micros();
         xts256.encryptSector(encryptBuffer, plaintext);
-        Serial.println(micros() - start);
-        start = micros();
         xts256.decryptSector(plaintext, decryptBuffer);
-        Serial.println(micros() - start);
+        xts256Time += micros() - start;
 
         yield();
 
     }
-    
 
+    strings[0] = String(ctr128Time/counter);
+    strings[1] = String(ctr192Time/counter);
+    strings[2] = String(ctr256Time/counter);
+    strings[3] = String(eax128Time/counter);
+    strings[4] = String(eax192Time/counter);
+    strings[5] = String(eax256Time/counter);
+    strings[6] = String(gcm128Time/counter);
+    strings[7] = String(gcm192Time/counter);
+    strings[8] = String(gcm256Time/counter);
+    strings[9] = String(xts128Time/counter);
+    strings[10] = String(xts192Time/counter);
+    strings[11] = String(xts256Time/counter);
 
+    return strings;
 
 }
 
